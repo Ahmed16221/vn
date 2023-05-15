@@ -1,3 +1,4 @@
+
 To run this project, you'll need to install the required packages using `yarn install`, followed by starting the project using `yarn start`.
 
 The following is a list of the main files included in the project:
