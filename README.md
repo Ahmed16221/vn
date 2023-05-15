@@ -25,4 +25,4 @@ The main packages used in this project are:
 2. Apollo
 3. Graphql
 
-
+This project showcases both basic and advanced understanding of React components, routing, and the usage of GraphQL with Apollo. The incorporation of reducers demonstrates a solid comprehension of Redux within a complex project. By implementing the router layer, I aim to provide comprehensive evidence that my skills align with the requirements of the posted job. However, I acknowledge that there is room for further enhancement in terms of theme creation within this project.
