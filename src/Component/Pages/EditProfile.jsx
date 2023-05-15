@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { ListDataContext } from "../Context/listingConext";
 import {
   Grid,
@@ -17,7 +17,6 @@ const getId = (idString) => {
   return splitAr;
 };
 const EditProfile = (props) => {
-  const newProfileId = getId(props.history.location.pathname.split("/"));
   const listContextData = useContext(ListDataContext);
   const [imageLink, setImageLink] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -160,6 +159,8 @@ const EditProfile = (props) => {
           <Box mt={10} sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Divider />
             <Button
+            color="maincolor"
+            sx={{color:"white"}}
               onClick={() => {
                 let tempProfile = {
                   updateProfileId: !isNewProfile && id,
@@ -188,7 +189,7 @@ const EditProfile = (props) => {
                         variables: tempProfile,
                       });
                 }
-                window.location.href = "/";
+                // window.location.href = "/";
               }}
               variant="contained"
             >

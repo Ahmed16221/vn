@@ -14,7 +14,8 @@ const initalState = {
   listData: [],
   filter: "",
   setFilter: true,
-  tempProfile:{}
+  tempProfile: {},
+  pageSize: 15,
 };
 
 const reducer = (state, { type, payload }) => {
@@ -31,12 +32,16 @@ const reducer = (state, { type, payload }) => {
       return { ...state, listData: payload, setFilter: false };
     case "PROFILEMUATATION":
       return { ...state, updateProfile: payload };
-      case "PROFILEDELETEMUATATION":
-        return { ...state, deleteProfile: payload };
-        case "PROFILEEDIT":
-            return { ...state, tempProfile: payload };
-            case "ADDPROFILE":
-              return { ...state, addProfile: payload };
+    case "PROFILEDELETEMUATATION":
+      return { ...state, deleteProfile: payload };
+    case "PROFILEEDIT":
+      return { ...state, tempProfile: payload };
+    case "ADDPROFILE":
+      return { ...state, addProfile: payload };
+    case "SETPAGENO":
+      return { ...state, pageNo: payload };
+    case "SETPAGESIZE":
+      return { ...state, pageSize: payload };
 
     default:
       throw new Error();
@@ -48,28 +53,32 @@ const ListDataContextProvider = (props) => {
 
   const [
     updateProfile,
-    { loading: profileLoading, error: profileError, data: subOrderData },
+    // { loading: profileLoading, error: profileError, data: subOrderData },
   ] = useMutation(profiles.profileMutation, {
-    onCompleted(data) {
-        refetch()
+    onCompleted() {
+      refetch();
     },
   });
 
   const [
     addProfile,
-    { loading: profileAddLoading, error: profileAddError, data: additionData },
+    // { loading: profileAddLoading, error: profileAddError, data: additionData },
   ] = useMutation(profiles.addprofile, {
-    onCompleted(data) {
-        refetch()
+    onCompleted() {
+      refetch();
     },
   });
 
   const [
     deleteProfile,
-    { loading: profiledelLoading, error: profiledelError, data: profiledelData },
+    // {
+    //   loading: profiledelLoading,
+    //   error: profiledelError,
+    //   data: profiledelData,
+    // },
   ] = useMutation(profiles.deleteProfileMutation, {
-    onCompleted(data) {
-        refetch()
+    onCompleted() {
+      refetch();
     },
   });
 
@@ -81,7 +90,7 @@ const ListDataContextProvider = (props) => {
 
   const [queryVariable, setQueryVariable] = useState({
     orderBy: { key: "is_verified", sort: "desc" },
-    rows: 16,
+    rows: 15,
     page: 0,
     searchString: "",
   });
@@ -92,9 +101,19 @@ const ListDataContextProvider = (props) => {
   useEffect(() => {
     const tempSearchString = { ...queryVariable };
     tempSearchString["searchString"] = state.filter;
-
     setQueryVariable(tempSearchString);
   }, [state.filter]);
+  useEffect(() => {
+    const tempSearchString = { ...queryVariable };
+    tempSearchString["page"] = state.pageNo;
+    setQueryVariable(tempSearchString);
+  }, [state.pageNo]);
+  useEffect(() => {
+    const tempSearchString = { ...queryVariable };
+    tempSearchString["rows"] = state.pageSize;
+    setQueryVariable(tempSearchString);
+    refetch();
+  }, [state.pageSize]);
 
   useEffect(() => {
     if (data) {
@@ -103,7 +122,6 @@ const ListDataContextProvider = (props) => {
     if (error) {
       dispatch({ type: ERROR, payload: error });
     }
-
     if (loading) {
       dispatch({ type: LOADING, payload: false });
     }

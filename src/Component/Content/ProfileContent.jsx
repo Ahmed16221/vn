@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ListDataContext } from "../";
-import {Link,   useLinkClickHandler, } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Grid,
   Avatar,
@@ -27,7 +27,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 
 const ConfirmationDialog = (props) => {
   const listContextData = useContext(ListDataContext);
-  const [open, setOpen] = useState(props.open);
+  const [open] = useState(props.open);
   return (
     <Dialog
       open={open}
@@ -52,8 +52,10 @@ const ConfirmationDialog = (props) => {
         spacing={{ xs: 1, sm: 2, md: 6 }}
       >
         <Button
-          sx={{ width: "200px" }}
           variant="contained"
+          color="primary"
+          autoFocus
+          sx={{ width: "200px", backgroundColor: "background.paper" }}
           onClick={props.close}
         >
           Cancel
@@ -79,31 +81,30 @@ const ConfirmationDialog = (props) => {
 const ProfileCardContent = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-  let to=`/editprofile/${props.id}`
+  // let to = `/editprofile/${props.id}`;
   const listContextData = useContext(ListDataContext);
 
-  let handleDispatch = ()=>{
-    listContextData.dispatch({ type: "PROFILEEDIT", payload: {...props} });
-  }
-  let handleEditClick = useLinkClickHandler(to, {
-  state: {...props}, 
-    });
   return (
-    <Grid key={props.id} item xs={12} sm={6} md={3}>
+    <Grid key={`${props.id} + ${props.first_name}`} item xs={12} sm={6} md={3}>
       <Card
+      key={props.id}
         sx={{
           maxWidth: 345,
           minHeight: "21` 50px",
           backgroundColor: "#181A1C",
+          height:"100%"
         }}
       >
         <CardHeader
-          avatar={<Avatar aria-label="recipe">R</Avatar>}
+          avatar={<Avatar  sx={{mb:2}} src={props.image_url} aria-label="image">{}</Avatar>}
           action={
             <>
               <IconButton
                 onClick={() => {
-                  listContextData.dispatch({ type: "PROFILEEDIT", payload: {...props} });
+                  listContextData.dispatch({
+                    type: "PROFILEEDIT",
+                    payload: { ...props },
+                  });
                   setIsOpen(!isOpen);
                 }}
                 aria-label="settings"
@@ -130,8 +131,11 @@ const ProfileCardContent = (props) => {
                       <ListItemText primary="Delete" />
                     </ListItemButton>
                     <ListItemButton>
-                        <Link style={{color:"white", textDecoration:"none"}} to={`/editprofile/${props.id}`} >
-                      <ListItemText primary="Edit" />
+                      <Link
+                        style={{ color: "white", textDecoration: "none" }}
+                        to={`/editprofile/${props.id}`}
+                      >
+                        <ListItemText primary="Edit" />
                       </Link>
                     </ListItemButton>
                   </List>
@@ -148,11 +152,12 @@ const ProfileCardContent = (props) => {
               </Box>
             </>
           }
+          titleTypographyProps={{ fontWeight: "500", fontSize: "16px" }}
           title={
             <>
               {props.first_name}
               <IconButton aria-label="settings">
-                <VerifiedIcon />
+                <VerifiedIcon color="maincolor" sx={{ mb: 1, mr: 1 }} />
               </IconButton>
             </>
           }
@@ -179,10 +184,10 @@ const ProfileContent = (props) => {
   }, [listContextData]);
   return (
     <>
-      <Grid sx={{ mt: 2 }} container spacing={2}>
+      <Grid sx={{ mt: 2 }} key={`profileContentGrid`}container spacing={2}>
         {profileListing.map((data) => (
           <>
-            <ProfileCardContent key={data.id} {...data} {...props}/>
+            <ProfileCardContent key={data.id} {...data} {...props} />
           </>
         ))}
       </Grid>
